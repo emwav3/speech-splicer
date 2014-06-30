@@ -2,52 +2,47 @@ import time, configparser
 from pydub import AudioSegment
 from pydub.utils import make_chunks, db_to_float
 
-splicing_resolution = 30
+splicing_resolution = 10
 silence_threshold = 430
 pause_threshold = 60
 
 
 def main():
-    x = pause_threshold
+    # Load audio file and print the length
     audio = AudioSegment.from_wav("MB Track 3.wav")
+    print("audio length:\t\t" + str(audio.__len__() / 1000) + "seconds")
+
+    #Strip off the first few seconds and create chunks of audio
     audio = audio[4000:]
     chunks = make_chunks(audio, splicing_resolution)
-    build = audio[:0]
-    print(silence_threshold)
-    resets = 0
-    chunk_list = []
+    chuck_start_end_list = []
     running = True
-    index = 0
-    while running:
+    average_loudness = audio.rms
+    silence_threshold = average_loudness * db_to_float(-19)
+    print("chunk list length:\t" + str(len(chunks)))
+    print("silence threshold:\t" + str(silence_threshold))
+
+    build = audio[:0]
+    i = 0
+    while i < (len(chunks)):
+        start_stop = [0, 0]
         if chunks[i].rms < silence_threshold:
-            index += 1
-            else (chunks[index].rms < pause_threshold):
-            while (chunks[index].rms < silence_threshold):
-                build += chunks[index]
-
-                build = audio[:0]
-
+            while chunks[i].rms <= silence_threshold:
+                i += 1
+            start_stop[0] = i
         else:
-
-            print("decrement x")
-        x -= 1
-
-    else:
-
-        build += chunks[i]
-
-
-build = audio[:0]
-print(len(chunk_list))
-for i in range(1, len(chunk_list)):
-    print("ex")
-    build = chunk_list[i]
-    build.export(("test/test{0}.mp3".format(str(i))), format="mp3")
-print("resets: " + str(resets))
-build.export("test2.mp3", format="mp3")
-print("silence threshold: " + str(silence_threshold))
+            while chunks[i].rms >= silence_threshold:
+                i += 1
+                print("test")
+        start_stop[1] = i
+        # print("pass")
+        chuck_start_end_list.append(start_stop)
+    # build = chunk_list[i]
+    #     build.export(("test/test{0}.mp3".format(str(i))), format="mp3")
+    # build.export("test2.mp3", format="mp3")
+    print(len(chuck_start_end_list))
 
 if __name__ == '__main__':
     start_time = time.time()
     main()
-    print("time: %s seconds" % str(time.time() - start_time))
+    print("time:\t\t\t\t%s seconds" % str(time.time() - start_time))

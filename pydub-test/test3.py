@@ -3,7 +3,7 @@ from pydub import AudioSegment
 from pydub.utils import make_chunks, db_to_float
 
 splicing_resolution = 10
-silence_threshold = 430
+silence_threshold = 428
 pause_threshold = 60
 
 

@@ -16,6 +16,5 @@ for part in parts:
     if part.rms > silence_threshold:
         audio.append(part)
 
-
 print("e")
 audio.export("test.wav", format="wav")

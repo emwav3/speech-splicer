@@ -1,5 +1,3 @@
-
-
 import time, configparser
 from pydub import AudioSegment
 from pydub.utils import make_chunks, db_to_float
@@ -8,9 +6,11 @@ splicing_resolution = 30
 silence_threshold = 430
 pause_threshold = 60
 
+
 def average_loudness(audio):
     average_loudness = audio.rms
     return average_loudness
+
 
 def main():
     x = pause_threshold
@@ -48,6 +48,7 @@ def main():
     print("resets: " + str(resets))
     build.export("test2.mp3", format="mp3")
     print("silence threshold: " + str(silence_threshold))
+
 
 if __name__ == '__main__':
     start_time = time.time()

@@ -16,7 +16,7 @@ def main():
     audio = AudioSegment.from_wav("MB Track 3.wav")
     print("audio length:\t\t" + str(audio.__len__() / 1000) + "seconds")
 
-    #Strip off the first few seconds and create chunks of audio
+    # Strip off the first few seconds and create chunks of audio
     audio = audio[4000:]
     chunks = make_chunks(audio, splicing_resolution)
     chuck_start_end_list = []
@@ -53,6 +53,7 @@ def main():
     # print((chuck_start_end_list))
     print("Chuck start stop list length: " + str(len(chuck_start_end_list)))
     print("silence threshold:\t" + str(silence_threshold))
+
 
 if __name__ == '__main__':
     start_time = time.time()

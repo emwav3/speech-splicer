@@ -4,25 +4,27 @@ from pydub import AudioSegment
 from pydub.utils import make_chunks, db_to_float
 import pandas as pd
 from pandas import DataFrame, Series
-import numpy as np
 
-splicing_resolution = 20
-silence_threshold = 110
+
+splicing_resolution = 10
+silence_threshold = 800
 pause_threshold = 300
 
 
 def main():
     # Load audio file and print the length
-    audio = AudioSegment.from_wav("MB Track 3.wav")
+    audio = AudioSegment.from_wav("C:\MB Track 32.wav")
     print("audio length:\t\t" + str(audio.__len__() / 1000) + "seconds")
 
     # Strip off the first few seconds and create chunks of audio
-    audio = audio[4000:]
-    chunks = make_chunks(audio, splicing_resolution)
+    # audio = audio[4000:]
+
+
     chuck_start_end_list = []
     running = True
     average_loudness = audio.rms
-    # silence_threshold = average_loudness * db_to_float(-12)
+    # silence_threshold = average_loudness * db_to_float(-21)
+    chunks = make_chunks(audio, splicing_resolution)
     print("chunk list length:\t" + str(len(chunks)))
 
     build = audio[:0]
@@ -31,16 +33,17 @@ def main():
     stop = 0
     while i < (len(chunks)):
         start_stop = [0, 0]
-        if chunks[i].rms < silence_threshold:
+        if chunks[i].rms <= silence_threshold:
             while i < (len(chunks)) and chunks[i].rms <= silence_threshold:
+                print("low" + str(i))
+                print(chunks[i].rms)
                 i += 1
-                print("i = " + str(i))
             start = i
         else:
-            while i < (len(chunks)) and chunks[i].rms >= silence_threshold:
+            while i < (len(chunks)) and chunks[i].rms > silence_threshold:
+                print("high" + str(i))
+                print(chunks[i].rms)
                 i += 1
-                print("i = " + str(i))
-                print("test")
         stop = i
         # print("pass")
         if ( start != stop):
@@ -50,12 +53,24 @@ def main():
     # build.export("test2.mp3", format="mp3")
 
 
-    # print((chuck_start_end_list))
+    print((chuck_start_end_list))
     print("Chuck start stop list length: " + str(len(chuck_start_end_list)))
     print("silence threshold:\t" + str(silence_threshold))
 
+    # For testing only -- prints segment sizes, showing larger segment
+    large_chunks = 0
+    for chunk in chuck_start_end_list:
+        size = (chunk[1] - chunk[0])
+
+        if size > 32:
+            print("----------" + str(size))
+            large_chunks += 1
+        else:
+            print(size)
+    print(large_chunks)
 
 if __name__ == '__main__':
     start_time = time.time()
     main()
     print("time:\t\t\t\t%s seconds" % str(time.time() - start_time))
+    print(db_to_float(10))
